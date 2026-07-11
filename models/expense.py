@@ -11,10 +11,10 @@ from database import Base
 
 class DbExpense(Base):
     __tablename__ = "expense"
-    id = Column(Integer, primary_key=True)
-    amount = Column(Float)
-    date = Column(Date)
-    category = Column(String)
-    is_recurring = Column(Boolean)
+    id = Column(Integer, primary_key=True,index=True)
+    amount = Column(Float,nullable=False)
+    date = Column(Date,nullable=False)
+    category = Column(String,nullable=False)
+    is_recurring = Column(Boolean,default=False)
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("DbUser", back_populates="expenses")
