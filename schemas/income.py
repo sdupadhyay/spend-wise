@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import date
 
 
@@ -13,8 +13,10 @@ class IncomeUpdate(BaseModel):
     amount: Optional[float] = None
     date: Optional[date] = None
     source: Optional[str] = None
-    is_recurring: Optional[bool] = False    
+    is_recurring: Optional[bool] = False
 
-class IncomeDisplay(BaseModel):
-    id:int
+
+class IncomeDisplay(IncomeBase):
+    id: int
     user_id: int
+    model_config = ConfigDict(from_attributes=True)

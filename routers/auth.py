@@ -1,6 +1,7 @@
 from auth_utils import verify_password
 from auth_token import create_access_token
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from schemas.user import UserBase, UserDisplay, Token
 from models.user import DbUser
@@ -29,8 +30,12 @@ def user_signup(user: UserBase, db: Session = Depends(get_db)):
     access_token = create_access_token(data={"username": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.post("/login",response_model=Token,status_code=status.HTTP_200_OK)
-def user_login(user:UserBase,db:Session = Depends(get_db)):
+
+@router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
+# we are using request form as input for user because FAST API doc auth expects it in that form
+def user_login(
+    user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
     existing_user = db.query(DbUser).filter(DbUser.username == user.username).first()
     if not existing_user:
         raise HTTPException(
@@ -39,7 +44,7 @@ def user_login(user:UserBase,db:Session = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     else:
-        if verify_password(user.password,existing_user.hashed_password):
+        if verify_password(user.password, existing_user.hashed_password):
             access_token = create_access_token(data={"username": user.username})
             return {"access_token": access_token, "token_type": "bearer"}
         else:
@@ -48,4 +53,3 @@ def user_login(user:UserBase,db:Session = Depends(get_db)):
                 detail="Invalid Credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-    
