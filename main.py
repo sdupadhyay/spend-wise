@@ -1,3 +1,4 @@
+from routers import balance
 from fastapi import FastAPI
 from database import engine, Base
 from routers import auth, income, expense
@@ -11,6 +12,7 @@ app = FastAPI()
 app.include_router(auth.router)
 app.include_router(income.router)
 app.include_router(expense.router)
+app.include_router(balance.router)
 
 @app.get("/")
 def root():
