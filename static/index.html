@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendWise - Personal Wealth Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header>
+    <a href="#" class="logo">
+      <div class="logo-icon">Rs.</div>
+      <div class="logo-text">SpendWise</div>
+    </a>
+    <div id="nav-auth-section" class="nav-user hidden">
+      <span id="user-display-name" class="user-tag">username</span>
+      <button id="btn-logout" class="btn btn-outline" style="width: auto; padding: 6px 16px;">Logout</button>
+    </div>
+  </header>
+
+  <!-- Notification Banner -->
+  <main>
+    <div id="alert-container" class="alert hidden"></div>
+
+    <!-- AUTHENTICATION CONTAINER (Login / Signup) -->
+    <section id="auth-section" class="auth-container">
+      
+      <!-- Login Form -->
+      <div id="login-box">
+        <div class="auth-header">
+          <h2>Welcome Back</h2>
+          <p>Login to manage your personal finances</p>
+        </div>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" placeholder="Enter your username" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary">Log In</button>
+        </form>
+        <div class="auth-toggle">
+          Don't have an account? <a href="#" id="link-show-signup">Sign up</a>
+        </div>
+      </div>
+
+      <!-- Signup Form (Hidden by default) -->
+      <div id="signup-box" class="hidden">
+        <div class="auth-header">
+          <h2>Create Account</h2>
+          <p>Register to start tracking your cashflow</p>
+        </div>
+        <form id="signup-form">
+          <div class="form-group">
+            <label for="signup-username">Username</label>
+            <input type="text" id="signup-username" placeholder="Choose a username" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Choose a strong password" required autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <div class="auth-toggle">
+          Already have an account? <a href="#" id="link-show-login">Log in</a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- DASHBOARD CONTAINER (Hidden by default) -->
+    <section id="dashboard-section" class="dashboard-grid hidden">
+      
+      <!-- Metrics Summary Cards -->
+      <div class="metrics-row">
+        <!-- Balance Card -->
+        <div class="metric-card">
+          <div>
+            <div class="metric-title">Net Balance</div>
+            <div id="val-balance" class="metric-value balance">Rs.0.00</div>
+          </div>
+        </div>
+        <!-- Income Card -->
+        <div class="metric-card">
+          <div>
+            <div class="metric-title">Total Income</div>
+            <div id="val-total-income" class="metric-value income">Rs.0.00</div>
+          </div>
+        </div>
+        <!-- Expense Card -->
+        <div class="metric-card">
+          <div>
+            <div class="metric-title">Total Expense</div>
+            <div id="val-total-expense" class="metric-value expense">Rs.0.00</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Workspace -->
+      <div class="workspace-row">
+        
+        <!-- INCOME PANEL -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Incomes</h3>
+            <button id="btn-toggle-income-form" class="panel-action" title="Add Income">+</button>
+          </div>
+
+          <!-- Add Income Form (Collapsed by default) -->
+          <form id="income-form" class="panel-form hidden">
+            <div class="form-group">
+              <label for="income-source">Source</label>
+              <input type="text" id="income-source" placeholder="e.g. Salary, Freelance" required>
+            </div>
+            <div class="panel-form-row">
+              <div class="form-group">
+                <label for="income-amount">Amount (Rs.)</label>
+                <input type="number" id="income-amount" step="0.01" placeholder="0.00" required min="0.01">
+              </div>
+              <div class="form-group">
+                <label for="income-date">Date</label>
+                <input type="date" id="income-date" required>
+              </div>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="income-recurring" style="width: auto;">
+              <label for="income-recurring" style="margin-bottom: 0; cursor: pointer;">Recurring Income</label>
+            </div>
+            <div class="panel-form-row">
+              <button type="button" id="btn-cancel-income" class="btn btn-outline">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Income</button>
+            </div>
+          </form>
+
+          <!-- Incomes List -->
+          <div id="income-list" class="list-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- EXPENSE PANEL -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Expenses</h3>
+            <button id="btn-toggle-expense-form" class="panel-action" title="Add Expense">+</button>
+          </div>
+
+          <!-- Add Expense Form (Collapsed by default) -->
+          <form id="expense-form" class="panel-form hidden">
+            <div class="form-group">
+              <label for="expense-category">Category</label>
+              <input type="text" id="expense-category" placeholder="e.g. Food, Transport, Rent" required>
+            </div>
+            <div class="panel-form-row">
+              <div class="form-group">
+                <label for="expense-amount">Amount (Rs.)</label>
+                <input type="number" id="expense-amount" step="0.01" placeholder="0.00" required min="0.01">
+              </div>
+              <div class="form-group">
+                <label for="expense-date">Date</label>
+                <input type="date" id="expense-date" required>
+              </div>
+            </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+              <input type="checkbox" id="expense-recurring" style="width: auto;">
+              <label for="expense-recurring" style="margin-bottom: 0; cursor: pointer;">Recurring Expense</label>
+            </div>
+            <div class="panel-form-row">
+              <button type="button" id="btn-cancel-expense" class="btn btn-outline">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Expense</button>
+            </div>
+          </form>
+
+          <!-- Expenses List -->
+          <div id="expense-list" class="list-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

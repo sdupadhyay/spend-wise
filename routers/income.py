@@ -50,18 +50,10 @@ def get_income(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    user_incomes = (
-        db.query(DbIncome)
-        .filter(DbIncome.user_id == current_user.id, DbIncome.source == source)
-        .all()
-    )
-    if not user_incomes:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No income found",
-        )
-
-    return user_incomes
+    query = db.query(DbIncome).filter(DbIncome.user_id == current_user.id)
+    if source:
+        query = query.filter(DbIncome.source == source)
+    return query.all()
 
 
 @router.get("/total-income")
